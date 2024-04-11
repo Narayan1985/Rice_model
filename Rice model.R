@@ -1,28 +1,29 @@
+#Define the work folder
 setwd("C:/Users/Julian Valencia/OneDrive/Escritorio/Rice model")
 
-# Step 1: Load necessary libraries
+# Load necessary libraries
 library(readxl) # For reading Excel files
 library(corrplot) # For correlation plot
 library(dplyr)    # For data manipulation
 library(caret)  # For data preprocessing and model training
 library(openxlsx) # For exporting results to Excel
 
-# Step 2: Load the dataset
+# Load the dataset
 data <- read_excel("data_base_RF1.xlsx")
 View(data)
 
-# Step 3: Check the structure and summary statistics
+# Check the structure and summary statistics
 str(data)
 summary(data)
 
-# Step 4: Data preprocessing (if needed)
+# Data preprocessing (if needed)
 sum(is.na(data))
 data <- na.omit(data)
 
-# Step 5: Check for correlation between variables
+# Check for correlation between variables
 data_numeric <- data[, sapply(data, is.numeric)]  # Select only numeric columns
 
-# Step 6: Check for missing values again
+# Check for missing values again
 sum(is.na(data_numeric))
 
 # Check for correlation between variables
@@ -95,7 +96,7 @@ ggplot(importance_df, aes(x = reorder(Feature, Importance), y = Importance)) +
   labs(x = "Feature", y = "Importancia") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-# Step 8: Export the results to Excel
+# Export the results to Excel
 model_output <- data.frame(Actual = test_data$Yield, Predicted = predictions)
 View(model_output)
 write.xlsx(model_output, "model_rice_output.xlsx")
