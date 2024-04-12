@@ -34,16 +34,16 @@ corrplot(cor_matrix, method = "square", type = "full",
          order = "original", tl.col = "black", tl.srt = 45, number.font=2, pch=1, 
          number.cex =0.5, tl.cex=0.5, mar = c(0, 0, 0, 0) )
 
-# Step 5: Split the data into training and testing sets
+# Split the data into training and testing sets
 set.seed(123) # for reproducibility
 trainIndex <- createDataPartition(data$Yield, p = 0.8, list = FALSE)
 train_data <- data[trainIndex, ]
 test_data <- data[-trainIndex, ]
 
-# Step 6: Fit a regression model
+# Fit a regression model
 model <- lm(Yield ~ ., data = train_data)
 
-# Step 7: Evaluate the model
+# Evaluate the model
 predictions <- predict(model, newdata = test_data)
 performance <- postResample(predictions, test_data$Yield)
 mse <- mean((test_data$Yield - predictions)^2)  # Mean Squared Error
@@ -58,6 +58,7 @@ plot(model)
 # Feature importance
 correlation <- cor(num_data, data$Yield)
 View(cor_matrix)
+write.xlsx(cor_matrix, "matriz_correlacion.xlsx", row.names = TRUE)
 corrplot(cor_matrix, method = "square", type = "full", 
          order = "original", tl.col = "black", tl.srt = 45, number.font=2, pch=1, 
          number.cex =0.5, tl.cex=0.5, mar = c(0, 0, 0, 0) )
@@ -87,16 +88,17 @@ importance_df <- importance_df[order(abs(importance_df$Correlation_with_Yield), 
 
 ggplot(importance_df, aes(x = reorder(Feature, Correlation_with_Yield), y = Importance)) +
   geom_bar(stat = "identity", fill = "skyblue") +
-  labs(x = "Feature", y = "Importance") +
+  labs(x = "Feature", y = "Value Weight") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 print(importance_df)
 
 ggplot(importance_df, aes(x = reorder(Feature, Importance), y = Importance)) +
-  geom_bar(stat = "identity", fill = "skyblue") +
-  labs(x = "Feature", y = "Importancia") +
+  geom_bar(stat = "identity", fill = "black") +
+  labs(x = "Feature", y = "Value Weight") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
+  
 # Export the results to Excel
 model_output <- data.frame(Actual = test_data$Yield, Predicted = predictions)
 View(model_output)
+plot(model_output)
 write.xlsx(model_output, "model_rice_output.xlsx")
